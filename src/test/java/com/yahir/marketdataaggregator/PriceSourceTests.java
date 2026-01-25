@@ -34,7 +34,7 @@ public class PriceSourceTests {
         double price = normalTick.get().getPrice();
 
         assertEquals("BTCUSD", normalTick.get().getSymbol());
-        assertEquals("NormalPriceSource", normalTick.get().getSource());
+        assertEquals("normalPriceSource", normalTick.get().getSource());
         assertThat(price).isBetween(lowerBound, upperBound);
     }
 

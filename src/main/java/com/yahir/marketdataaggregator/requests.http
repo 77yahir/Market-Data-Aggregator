@@ -1,0 +1,19 @@
+### Get all prices
+GET http://localhost:8080/prices
+Accept: application/json
+
+### Get prices for BTCUSD
+GET http://localhost:8080/prices/BTCUSD
+Accept: application/json
+
+### Poll BTCUSD once
+POST http://localhost:8080/poll/BTCUSD
+Accept: application/json
+
+### POLL ETHUSD once
+POST http://localhost:8080/poll/ETHUSD
+Accept: application/json
+
+### Try and Invalid Symbol (should return 400 or 404 error depending on symbol)
+GET http://localhost:8080/prices/
+Accept: application/json

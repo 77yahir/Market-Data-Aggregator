@@ -1,6 +1,5 @@
 package com.yahir.marketdataaggregator;
 
-import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.domain.PriceTick;
 import com.yahir.marketdataaggregator.service.MarketDataService;
 import com.yahir.marketdataaggregator.sources.*;

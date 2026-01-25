@@ -27,6 +27,8 @@
 		<url/>
 	</scm>
 	<properties>
+		<bytebuddy.agent.version>1.17.8</bytebuddy.agent.version>
+		<mockito.version>5.11.0</mockito.version>
 		<java.version>25</java.version>
 		<kotlin.version>2.2.20</kotlin.version>
 	</properties>
@@ -125,6 +127,16 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<argLine>
+						-javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${bytebuddy.agent.version}/byte-buddy-agent-${bytebuddy.agent.version}.jar
+					</argLine>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
