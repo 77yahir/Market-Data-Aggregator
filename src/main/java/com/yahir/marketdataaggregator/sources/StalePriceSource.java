@@ -1,7 +1,6 @@
 package com.yahir.marketdataaggregator.sources;
 
 import com.yahir.marketdataaggregator.domain.PriceTick;
-import org.intellij.lang.annotations.JdkConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
