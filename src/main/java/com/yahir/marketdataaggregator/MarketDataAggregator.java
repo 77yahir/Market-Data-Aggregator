@@ -79,7 +79,7 @@ public class MarketDataAggregator {
             log.error("symbol is empty");
             return Optional.empty();
         }
-        String tickSymbol = symbol.toUpperCase();
+        String tickSymbol = symbol.trim().toUpperCase();
         if (bestBySymbol.containsKey(tickSymbol) && bestBySymbol.get(tickSymbol).getPrice() > 0) {
             return Optional.ofNullable(bestBySymbol.get(tickSymbol));
         } else {

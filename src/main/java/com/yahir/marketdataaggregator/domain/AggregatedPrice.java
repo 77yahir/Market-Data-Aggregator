@@ -11,7 +11,7 @@ public class AggregatedPrice {
     private String reason;
 
     public AggregatedPrice(String symbol, double price, Instant timeStamp, String source, String reason) {
-        this.symbol = symbol.toUpperCase();
+        this.symbol = symbol.trim().toUpperCase();
         this.price = price;
         this.timeStamp = timeStamp;
         this.source = source;
@@ -19,7 +19,7 @@ public class AggregatedPrice {
     }
 
     public AggregatedPrice(String symbol, double price, Instant timeStamp, String source) {
-        this.symbol = symbol.toUpperCase();
+        this.symbol = symbol.trim().toUpperCase();
         this.price = price;
         this.timeStamp = timeStamp;
         this.source = source;

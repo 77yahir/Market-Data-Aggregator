@@ -16,7 +16,7 @@ public class PriceTick {
     }
 
     public PriceTick(String symbol, double price, Instant timeStamp, String source) {
-        this.symbol = symbol.toUpperCase();
+        this.symbol = symbol.trim().toUpperCase();
         this.price = price;
         this.timeStamp = timeStamp;
         this.source = source;

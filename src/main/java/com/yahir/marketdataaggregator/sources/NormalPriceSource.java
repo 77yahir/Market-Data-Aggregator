@@ -1,6 +1,7 @@
 package com.yahir.marketdataaggregator.sources;
 
 import com.yahir.marketdataaggregator.domain.PriceTick;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -8,6 +9,11 @@ import java.util.Optional;
 import java.util.Random;
 
 @Component
+@ConditionalOnProperty(
+        prefix = "sources.normal",
+        name = "enabled",
+        havingValue = "true"
+)
 public class NormalPriceSource implements PriceSource {
     private final String name = "NormalPriceSource";
     private final Clock clock;

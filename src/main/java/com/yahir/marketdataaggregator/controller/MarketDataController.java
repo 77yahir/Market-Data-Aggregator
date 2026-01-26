@@ -2,6 +2,7 @@ package com.yahir.marketdataaggregator.controller;
 
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.service.MarketDataService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,21 +34,12 @@ public class MarketDataController {
     @GetMapping("/prices/{symbol}")
     public ResponseEntity<?> getBestPriceOf(@PathVariable String symbol) {
 
-        if (symbol == null || symbol.isBlank() || symbol.equalsIgnoreCase("null")) {
+        if (isEmptyOrNull(symbol)) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ApiError("Symbol cannot be null or empty"));
         }
-
-        Optional<AggregatedPrice> best = marketDataService.getBest(symbol);
-
-        if (best.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ApiError("Symbol not found with name: " + symbol));
-        }
-        ResponseDTO dto = toDTO(best.get());
-        return ResponseEntity.ok(dto);
+        return getResponseEntity(symbol);
     }
 
     @GetMapping("/prices")
@@ -61,7 +53,7 @@ public class MarketDataController {
     @PostMapping("/poll/{symbol}")
     public ResponseEntity<?> pollOnce(@PathVariable String symbol) {
 
-        if (symbol == null || symbol.isBlank() || symbol.equalsIgnoreCase("null"))  {
+        if (isEmptyOrNull(symbol)) {
             return ResponseEntity.
                     status(HttpStatus.BAD_REQUEST)
                     .body(new ApiError("Symbol cannot be null or empty"));
@@ -69,15 +61,24 @@ public class MarketDataController {
 
         marketDataService.pollOnce(symbol);
 
+        return getResponseEntity(symbol);
+    }
+
+    @NonNull
+    private ResponseEntity<?> getResponseEntity(@PathVariable String symbol) {
         Optional<AggregatedPrice> best = marketDataService.getBest(symbol);
 
         if (best.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
                     .body(new ApiError("Symbol not found with name: " + symbol));
         }
-
         ResponseDTO dto = toDTO(best.get());
         return ResponseEntity.ok(dto);
+    }
+
+    private boolean isEmptyOrNull(String symbol) {
+        return symbol == null || symbol.isBlank() || symbol.equalsIgnoreCase("null");
     }
 
     private ResponseDTO toDTO(AggregatedPrice price) {
