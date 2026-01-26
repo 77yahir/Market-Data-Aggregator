@@ -21,8 +21,8 @@ import java.util.Optional;
 @RestController
 public class MarketDataController {
 
-    public record ResponseDTO(String symbol, double price, Instant timeStamp, String source){};
-    public record ApiError(String message) {};
+    public record ResponseDTO(String symbol, double price, Instant timeStamp, String source){}
+    public record ApiError(String message) {}
 
     private final MarketDataService marketDataService;
 
