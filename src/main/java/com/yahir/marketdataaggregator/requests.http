@@ -17,3 +17,7 @@ Accept: application/json
 ### Try and Invalid Symbol (should return 400 or 404 error depending on symbol)
 GET http://localhost:8080/prices/
 Accept: application/json
+
+### Get all symbols
+GET http://localhost:8080/symbols
+Accept: application/json

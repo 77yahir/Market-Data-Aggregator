@@ -1,7 +1,5 @@
-package com.yahir.marketdataaggregator;
+package com.yahir.marketdataaggregator.domain;
 
-import com.yahir.marketdataaggregator.domain.AggregatedPrice;
-import com.yahir.marketdataaggregator.domain.PriceTick;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

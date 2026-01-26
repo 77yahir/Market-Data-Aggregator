@@ -1,6 +1,7 @@
 package com.yahir.marketdataaggregator;
 
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
+import com.yahir.marketdataaggregator.domain.MarketDataAggregator;
 import com.yahir.marketdataaggregator.domain.PriceTick;
 import org.junit.jupiter.api.Test;
 

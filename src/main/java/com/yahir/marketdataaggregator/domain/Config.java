@@ -1,4 +1,4 @@
-package com.yahir.marketdataaggregator;
+package com.yahir.marketdataaggregator.domain;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

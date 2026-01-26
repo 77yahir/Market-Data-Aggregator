@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -109,6 +110,16 @@ public class MarketDataControllerTests {
     }
 
     @Test
+    public void getBestPrice_formatsCorrectly() throws Exception {
+        AggregatedPrice testBTC = new AggregatedPrice("BTCUSD", 35000.656151, fixedClock.instant(), "TestSource");
+        when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.of(testBTC));
+
+        mockMvc.perform(get("/prices/BTCUSD"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(35000.66));
+    }
+
+    @Test
     public void pollOnceReturns400ErrorWhenSymbolIsNullOrEmpty() throws Exception {
 
         mockMvc.perform(post("/poll/ "))
@@ -150,5 +161,6 @@ public class MarketDataControllerTests {
         verify(marketDataService, times(1)).pollOnce("BTCUSD");
         verify(marketDataService, times(1)).getBest("BTCUSD");
     }
+
 
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.Optional;
 @RestController
 public class MarketDataController {
 
-    public record ResponseDTO(String symbol, double price, Instant timeStamp, String source){}
+    public record ResponseDTO(String symbol, BigDecimal price, Instant timeStamp, String source){}
     public record ApiError(String message) {}
 
     private final MarketDataService marketDataService;
@@ -48,6 +50,14 @@ public class MarketDataController {
         Map<String, AggregatedPrice> tempMap = marketDataService.getAllBest();
         tempMap.forEach((symbol, price) -> ResponseDTOS.add(toDTO(price)));
         return ResponseDTOS;
+    }
+
+    @GetMapping("/symbols")
+    public List<String> getAllSymbols() {
+        List<String> symbolList = new ArrayList<>();
+        Map<String, AggregatedPrice> tempMap = marketDataService.getAllBest();
+        tempMap.forEach((symbol, price) -> symbolList.add(symbol));
+        return symbolList;
     }
 
     @PostMapping("/poll/{symbol}")
@@ -82,6 +92,7 @@ public class MarketDataController {
     }
 
     private ResponseDTO toDTO(AggregatedPrice price) {
-        return new ResponseDTO(price.getSymbol(), price.getPrice(), price.getTimeStamp(), price.getSource());
+        BigDecimal priceAsDecimal = new BigDecimal(price.getPrice()).setScale(2, RoundingMode.UP);
+        return new ResponseDTO(price.getSymbol(), priceAsDecimal, price.getTimeStamp(), price.getSource());
     }
 }
