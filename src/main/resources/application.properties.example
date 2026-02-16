@@ -20,3 +20,7 @@ spring.jpa.hibernate.ddl-auto=create-drop
 # Enable H2 Console
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
+
+# Cache Configuration
+spring.cache.type=simple
+spring.cache.cache-names= bestPrice, allBestPrices, allPrices, allPricesForSymbol, allPricesBetween, priceHistoryForSymbolBetween

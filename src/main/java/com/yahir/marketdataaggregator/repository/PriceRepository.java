@@ -9,9 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PriceRepository extends JpaRepository<AggregatedPrice, Long> {
-
     List<AggregatedPrice> findBySymbol(String symbol);
     List<AggregatedPrice> findByTimeStampBetween(Instant start, Instant end);
     List<AggregatedPrice> findBySymbolAndTimeStampBetween(String symbol, Instant start, Instant end);
-
 }

@@ -5,8 +5,11 @@ import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.domain.PriceTick;
 import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.sources.PriceSource;
+import org.hibernate.annotations.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -27,6 +30,9 @@ public class MarketDataService {
         this.priceRepository = priceRepository;
     }
 
+    @CacheEvict(
+            cacheNames = {"bestPrice", "allBestPrices", "allPrices", "allPricesForSymbol", "allPricesBetween", "priceHistoryForSymbolBetween"},
+            allEntries = true)
     public void pollOnce(String symbol) {
         if (priceSources.isEmpty()) {
             log.warn("pollOnce called but no sources found for symbol={}", symbol);
@@ -52,26 +58,32 @@ public class MarketDataService {
         log.info("pollOnce complete for symbol={},", symbol);
     }
 
+    @Cacheable("bestPrice")
     public Optional<AggregatedPrice> getBest(String symbol) {
         return aggregator.getBest(symbol);
     }
 
+    @Cacheable("allBestPrices")
     public Map<String,AggregatedPrice> getAllBest () {
         return aggregator.getAllBest();
     }
 
+    @Cacheable("allPrices")
     public List<AggregatedPrice> getAllPrices() {
         return priceRepository.findAll();
     }
 
+    @Cacheable("allPricesForSymbol")
     public List<AggregatedPrice> getAllPricesForSymbol(String symbol) {
         return priceRepository.findBySymbol(symbol);
     }
 
+    @Cacheable("allPricesBetween")
     public List<AggregatedPrice> getAllPricesBetween(Instant start, Instant end) {
         return priceRepository.findByTimeStampBetween(start, end);
     }
 
+    @Cacheable("priceHistoryForSymbolBetween")
     public List<AggregatedPrice> getPriceHistoryForSymbolBetween(String symbol, Instant start, Instant end) {
         return priceRepository.findBySymbolAndTimeStampBetween(symbol, start, end);
     }
