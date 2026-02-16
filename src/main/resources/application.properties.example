@@ -1,0 +1,22 @@
+spring.application.name=MarketDataAggregator
+sources.normal.enabled=true
+sources.outlier.enabled=true
+sources.stale.enabled=true
+sources.empty.enabled=false
+sources.alphavantage.enabled=false
+alphavantage.api.key=REPLACE_WITH_YOUR_KEY
+
+# H2 Database Configuration
+spring.datasource.url=jdbc:h2:mem:marketdata
+spring.datasource.driverClassName=org.h2.Driver
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+# Show SQL queries in console
+spring.jpa.show-sql=true
+
+# Auto-create tables from your entities
+spring.jpa.hibernate.ddl-auto=create-drop
+
+# Enable H2 Console
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
