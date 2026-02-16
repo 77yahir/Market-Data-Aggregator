@@ -6,7 +6,7 @@ Accept: application/json
 GET http://localhost:8080/prices
 Accept: application/json
 
-### GET Price history
+### GET all price history
 GET http://localhost:8080/prices/history
 Accept: application/json
 
@@ -22,12 +22,20 @@ Accept: application/json
 GET http://localhost:8080/prices/
 Accept: application/json
 
-### Poll BTCUSD once
-POST http://localhost:8080/poll/BTCUSD
+### Get price history for AAPL
+GET http://localhost:8080/prices/history/AAPL
 Accept: application/json
 
-### POLL ETHUSD once
-POST http://localhost:8080/poll/ETHUSD
+### Get all price history in range (ADJUST TIME STAMP TO CURRENT TIME)
+GET http://localhost:8080/prices/history/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
+Accept: application/json
+
+### Get price history for AAPl in range (ADJUST TIME STAMP TO CURRENT TIME)
+GET http://localhost:8080/prices/history/AAPL/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
+Accept: application/json
+
+### Poll BTCUSD once
+POST http://localhost:8080/poll/BTCUSD
 Accept: application/json
 
 ### POLL APPL once

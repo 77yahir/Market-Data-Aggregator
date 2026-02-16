@@ -8,10 +8,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -84,7 +81,41 @@ public class MarketDataController {
         List<ResponseDTO> responseDTOS = new ArrayList<>();
         List<AggregatedPrice> tempList = marketDataService.getAllPrices();
         tempList.forEach((price) -> responseDTOS.add(toDTO(price)));
-        System.out.println(tempList);
+        return responseDTOS;
+    }
+
+    @GetMapping("/prices/history/{symbol}")
+    public List<ResponseDTO> getSymbolHistory(@PathVariable String symbol) {
+        List<ResponseDTO> responseDTOS = new ArrayList<>();
+        List<AggregatedPrice> tempList = marketDataService.getAllPricesForSymbol(symbol);
+        tempList.forEach((price) -> responseDTOS.add(toDTO(price)));
+        return responseDTOS;
+    }
+
+    @GetMapping("/prices/history/range")
+    public List<ResponseDTO> getPricesByTimeRange(
+            @RequestParam String inStart,
+            @RequestParam String inEnd
+    ) {
+        List<ResponseDTO> responseDTOS = new ArrayList<>();
+        Instant start = Instant.parse(inStart);
+        Instant end = Instant.parse(inEnd);
+        List<AggregatedPrice> tempList = marketDataService.getAllPricesBetween(start, end);
+        tempList.forEach((price) -> responseDTOS.add(toDTO(price)));
+        return responseDTOS;
+    }
+
+    @GetMapping("/prices/history/{symbol}/range")
+    public List<ResponseDTO> getSymbolHistoryInRange(
+            @PathVariable String symbol,
+            @RequestParam String inStart,
+            @RequestParam String inEnd
+    ) {
+        List<ResponseDTO> responseDTOS = new ArrayList<>();
+        Instant start = Instant.parse(inStart);
+        Instant end = Instant.parse(inEnd);
+        List<AggregatedPrice> tempList = marketDataService.getPriceHistoryForSymbolBetween(symbol, start, end);
+        tempList.forEach((price) -> responseDTOS.add(toDTO(price)));
         return responseDTOS;
     }
 

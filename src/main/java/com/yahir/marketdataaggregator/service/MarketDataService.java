@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +62,18 @@ public class MarketDataService {
 
     public List<AggregatedPrice> getAllPrices() {
         return priceRepository.findAll();
+    }
+
+    public List<AggregatedPrice> getAllPricesForSymbol(String symbol) {
+        return priceRepository.findBySymbol(symbol);
+    }
+
+    public List<AggregatedPrice> getAllPricesBetween(Instant start, Instant end) {
+        return priceRepository.findByTimeStampBetween(start, end);
+    }
+
+    public List<AggregatedPrice> getPriceHistoryForSymbolBetween(String symbol, Instant start, Instant end) {
+        return priceRepository.findBySymbolAndTimeStampBetween(symbol, start, end);
     }
 
 }
