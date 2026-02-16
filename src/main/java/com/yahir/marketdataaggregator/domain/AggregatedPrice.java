@@ -1,14 +1,24 @@
 package com.yahir.marketdataaggregator.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.Instant;
 import java.util.Objects;
 
+@Entity
 public class AggregatedPrice {
     private String symbol;
     private double price;
     private Instant timeStamp;
     private String source;
     private String reason;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     public AggregatedPrice(String symbol, double price, Instant timeStamp, String source, String reason) {
         this.symbol = symbol.trim().toUpperCase();
@@ -30,6 +40,9 @@ public class AggregatedPrice {
         this.price = priceTick.getPrice();
         this.timeStamp = priceTick.getTimeStamp();
         this.source = priceTick.getSource();
+    }
+
+    public AggregatedPrice() {
     }
 
     public String getSymbol() {
@@ -70,6 +83,14 @@ public class AggregatedPrice {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

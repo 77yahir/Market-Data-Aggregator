@@ -1,9 +1,25 @@
+### Get all symbols
+GET http://localhost:8080/symbols
+Accept: application/json
+
 ### Get all prices
 GET http://localhost:8080/prices
 Accept: application/json
 
+### GET Price history
+GET http://localhost:8080/prices/history
+Accept: application/json
+
 ### Get prices for BTCUSD
 GET http://localhost:8080/prices/BTCUSD
+Accept: application/json
+
+### Get prices for AAPL
+GET http://localhost:8080/prices/AAPL
+Accept: application/json
+
+### Get an Invalid Symbol (should return 400 or 404 error depending on symbol)
+GET http://localhost:8080/prices/
 Accept: application/json
 
 ### Poll BTCUSD once
@@ -14,10 +30,10 @@ Accept: application/json
 POST http://localhost:8080/poll/ETHUSD
 Accept: application/json
 
-### Try and Invalid Symbol (should return 400 or 404 error depending on symbol)
-GET http://localhost:8080/prices/
+### POLL APPL once
+POST http://localhost:8080/poll/AAPL
 Accept: application/json
 
-### Get all symbols
-GET http://localhost:8080/symbols
+### POLL invalid symbol
+POST http://localhost:8080/poll/123
 Accept: application/json

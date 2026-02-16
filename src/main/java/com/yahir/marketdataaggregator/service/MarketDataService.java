@@ -3,6 +3,7 @@ package com.yahir.marketdataaggregator.service;
 import com.yahir.marketdataaggregator.domain.MarketDataAggregator;
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.domain.PriceTick;
+import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.sources.PriceSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +17,13 @@ import java.util.Optional;
 public class MarketDataService {
     private final List<PriceSource> priceSources;
     private final MarketDataAggregator aggregator;
+    private final PriceRepository priceRepository;
     private final Logger log = LoggerFactory.getLogger(MarketDataService.class);
 
-    public MarketDataService(List<PriceSource> priceSources, MarketDataAggregator aggregator) {
+    public MarketDataService(List<PriceSource> priceSources, MarketDataAggregator aggregator, PriceRepository priceRepository) {
         this.priceSources = priceSources;
         this.aggregator = aggregator;
+        this.priceRepository = priceRepository;
     }
 
     public void pollOnce(String symbol) {
@@ -40,6 +43,11 @@ public class MarketDataService {
                 aggregator.ingest(priceTick);
             }
         }
+        Optional<AggregatedPrice> bestPrice = aggregator.getBest(symbol);
+        if (bestPrice.isPresent()) {
+            AggregatedPrice best = bestPrice.get();
+            priceRepository.save(best);
+        }
         log.info("pollOnce complete for symbol={},", symbol);
     }
 
@@ -51,5 +59,8 @@ public class MarketDataService {
         return aggregator.getAllBest();
     }
 
+    public List<AggregatedPrice> getAllPrices() {
+        return priceRepository.findAll();
+    }
 
 }

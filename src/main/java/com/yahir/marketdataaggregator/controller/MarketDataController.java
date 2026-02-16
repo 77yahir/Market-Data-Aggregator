@@ -1,7 +1,9 @@
 package com.yahir.marketdataaggregator.controller;
 
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
+import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.service.MarketDataService;
+import org.apache.coyote.Response;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,14 +25,17 @@ import java.util.Optional;
 @RestController
 public class MarketDataController {
 
+    private final PriceRepository priceRepository;
+
     public record ResponseDTO(String symbol, BigDecimal price, Instant timeStamp, String source){}
     public record ApiError(String message) {}
 
     private final MarketDataService marketDataService;
 
     @Autowired
-    public MarketDataController(MarketDataService service) {
+    public MarketDataController(MarketDataService service, PriceRepository priceRepository) {
         this.marketDataService = service;
+        this.priceRepository = priceRepository;
     }
 
     @GetMapping("/prices/{symbol}")
@@ -72,6 +77,15 @@ public class MarketDataController {
         marketDataService.pollOnce(symbol);
 
         return getResponseEntity(symbol);
+    }
+
+    @GetMapping("/prices/history")
+    public List<ResponseDTO> getAllPricesFromDataBase() {
+        List<ResponseDTO> responseDTOS = new ArrayList<>();
+        List<AggregatedPrice> tempList = marketDataService.getAllPrices();
+        tempList.forEach((price) -> responseDTOS.add(toDTO(price)));
+        System.out.println(tempList);
+        return responseDTOS;
     }
 
     @NonNull
