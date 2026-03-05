@@ -20,8 +20,6 @@ public class MarketDataAggregatorTests {
     private final ZoneId zoneId = ZoneId.of("UTC");
     private final Clock fixedClock = Clock.fixed(fixedInstant, zoneId);
 
-//    .ingest() tests
-
     /**
      * Tests that .ingest() rejects empty tick, getBest() returns Optional.Empty(), getAllBest() returns Empty HashMap
      */

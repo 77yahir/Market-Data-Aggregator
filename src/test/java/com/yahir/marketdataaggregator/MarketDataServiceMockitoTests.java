@@ -4,6 +4,7 @@ package com.yahir.marketdataaggregator;
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.domain.MarketDataAggregator;
 import com.yahir.marketdataaggregator.domain.PriceTick;
+import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.service.MarketDataService;
 import com.yahir.marketdataaggregator.sources.PriceSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,12 +41,16 @@ public class MarketDataServiceMockitoTests {
     @Mock
     MarketDataAggregator marketDataAggregator;
 
+    @Mock
+    PriceRepository priceRepository;
+
+    @Mock
     MarketDataService service;
 
     @BeforeEach
     public void setup(){
         List<PriceSource> priceSources = new ArrayList<>(Arrays.asList(emptyPriceSource, normalPriceSource, outlierPriceSource));
-        service = new MarketDataService(priceSources, marketDataAggregator);
+        service = new MarketDataService(priceSources, marketDataAggregator, priceRepository);
     }
 
     @Test
@@ -62,6 +67,7 @@ public class MarketDataServiceMockitoTests {
         verify(normalPriceSource).getLatestTick("BTCUSD");
         verify(outlierPriceSource).getLatestTick("BTCUSD");
         verify(marketDataAggregator).ingest(pt);
+        verify(marketDataAggregator).getBest(pt.getSymbol());
         verifyNoMoreInteractions(marketDataAggregator);
     }
 
@@ -76,7 +82,8 @@ public class MarketDataServiceMockitoTests {
         verify(emptyPriceSource).getLatestTick("BTCUSD");
         verify(normalPriceSource).getLatestTick("BTCUSD");
         verify(outlierPriceSource).getLatestTick("BTCUSD");
-        verifyNoInteractions(marketDataAggregator);
+        verify(marketDataAggregator).getBest("BTCUSD");
+        verify(marketDataAggregator, never()).ingest(any());
     }
 
     @Test
@@ -95,6 +102,7 @@ public class MarketDataServiceMockitoTests {
         verify(outlierPriceSource).getLatestTick("BTCUSD");
         verify(marketDataAggregator).ingest(pt1);
         verify(marketDataAggregator).ingest(pt2);
+        verify(marketDataAggregator).getBest("BTCUSD");
         verifyNoMoreInteractions(marketDataAggregator);
     }
 
@@ -102,7 +110,7 @@ public class MarketDataServiceMockitoTests {
     public void handlesNoSourcesList() {
         List<PriceSource> priceSources = new ArrayList<>();
 
-        MarketDataService service = new MarketDataService(priceSources, marketDataAggregator);
+        MarketDataService service = new MarketDataService(priceSources, marketDataAggregator, priceRepository);
 
         service.pollOnce("BTCUSD");
         verifyNoInteractions(marketDataAggregator);
@@ -140,6 +148,8 @@ public class MarketDataServiceMockitoTests {
         verify(normalPriceSource).getLatestTick("ETHUSD");
         verify(marketDataAggregator).ingest(pt1);
         verify(marketDataAggregator).ingest(pt2);
+        verify(marketDataAggregator).getBest("BTCUSD");
+        verify(marketDataAggregator).getBest("ETHUSD");
         verify(marketDataAggregator).getAllBest();
         verifyNoMoreInteractions(marketDataAggregator);
     }

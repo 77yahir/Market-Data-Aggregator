@@ -2,6 +2,7 @@ package com.yahir.marketdataaggregator;
 
 import com.yahir.marketdataaggregator.domain.MarketDataAggregator;
 import com.yahir.marketdataaggregator.domain.PriceTick;
+import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.service.MarketDataService;
 import com.yahir.marketdataaggregator.sources.*;
 import org.junit.jupiter.api.Test;
@@ -14,21 +15,31 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class MarketDataServiceTests {
+    // Mock repository and create fixedClock to use for all tests
+
     private final Instant fixedInstant = Instant.parse("2026-01-01T00:00:00.00Z");
     private final ZoneId zoneId = ZoneId.of("UTC");
     private final Clock fixedClock = Clock.fixed(fixedInstant, zoneId);
+    private final PriceRepository mockRepository = mock(PriceRepository.class);
+
 
     @Test
     public void pollCallsAllSources() {
         MarketDataAggregator aggregator = new MarketDataAggregator(fixedClock);
+
         List<PriceSource> sources = new ArrayList<>();
         sources.add(new NormalPriceSource(fixedClock));
         sources.add(new OutlierPriceSource(fixedClock));
         sources.add(new StalePriceSource(fixedClock));
-        MarketDataService service = new MarketDataService(sources, aggregator);
+
+        // Pass all 3 dependencies
+        MarketDataService service = new MarketDataService(sources, aggregator, mockRepository);
+
         service.pollOnce("BTCUSD");
+
         assertTrue(service.getBest("BTCUSD").isPresent());
         assertEquals("NormalPriceSource", service.getBest("BTCUSD").get().getSource());
     }
@@ -36,11 +47,15 @@ public class MarketDataServiceTests {
     @Test
     public void pollHandlesEmptySources() {
         MarketDataAggregator aggregator = new MarketDataAggregator(fixedClock);
+
         List<PriceSource> sources = new ArrayList<>();
         sources.add(new NormalPriceSource(fixedClock));
         sources.add(new EmptyPriceSource(fixedClock));
-        MarketDataService service = new MarketDataService(sources, aggregator);
+
+        MarketDataService service = new MarketDataService(sources, aggregator, mockRepository);
+
         service.pollOnce("BTCUSD");
+
         assertTrue(service.getBest("BTCUSD").isPresent());
         assertEquals("NormalPriceSource", service.getBest("BTCUSD").get().getSource());
     }
@@ -48,10 +63,14 @@ public class MarketDataServiceTests {
     @Test
     public void getBestDelegates() {
         MarketDataAggregator aggregator = new MarketDataAggregator(fixedClock);
+
         PriceTick pt = new PriceTick("BTCUSD", 20500, fixedClock.instant().plusSeconds(100), "TestSource");
+
         aggregator.ingest(pt);
+
         List<PriceSource> sources = new ArrayList<>();
-        MarketDataService service = new MarketDataService(sources, aggregator);
+
+        MarketDataService service = new MarketDataService(sources, aggregator, mockRepository);
 
         assertTrue(service.getBest("BTCUSD").isPresent());
         assertEquals("TestSource", service.getBest("BTCUSD").get().getSource());
