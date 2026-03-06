@@ -1,47 +1,47 @@
 ### Get all symbols
-GET http://localhost:8080/symbols
+GET http://localhost:8080/api/symbols
 Accept: application/json
 
 ### Get all prices
-GET http://localhost:8080/prices
+GET http://localhost:8080/api/prices
 Accept: application/json
 
 ### GET all price history
-GET http://localhost:8080/prices/history
+GET http://localhost:8080/api/prices/history
 Accept: application/json
 
 ### Get prices for BTCUSD
-GET http://localhost:8080/prices/BTCUSD
+GET http://localhost:8080/api/prices/BTCUSD
 Accept: application/json
 
 ### Get prices for AAPL
-GET http://localhost:8080/prices/AAPL
+GET http://localhost:8080/api/prices/AAPL
 Accept: application/json
 
 ### Get an Invalid Symbol (should return 400 or 404 error depending on symbol)
-GET http://localhost:8080/prices/
+GET http://localhost:8080/api/prices/
 Accept: application/json
 
 ### Get price history for AAPL
-GET http://localhost:8080/prices/history/AAPL
+GET http://localhost:8080/api/prices/history/AAPL
 Accept: application/json
 
 ### Get all price history in range (ADJUST TIME STAMP TO CURRENT TIME)
-GET http://localhost:8080/prices/history/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
+GET http://localhost:8080/api/prices/history/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
 Accept: application/json
 
 ### Get price history for AAPl in range (ADJUST TIME STAMP TO CURRENT TIME)
-GET http://localhost:8080/prices/history/AAPL/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
+GET http://localhost:8080/api/prices/history/AAPL/range?inStart=2024-02-15T00:00:00Z&inEnd=2026-02-17T00:00:00Z
 Accept: application/json
 
 ### Poll BTCUSD once
-POST http://localhost:8080/poll/BTCUSD
+POST http://localhost:8080/api/poll/BTCUSD
 Accept: application/json
 
 ### POLL APPL once
-POST http://localhost:8080/poll/AAPL
+POST http://localhost:8080/api/poll/AAPL
 Accept: application/json
 
 ### POLL invalid symbol
-POST http://localhost:8080/poll/123
+POST http://localhost:8080/api/poll/123
 Accept: application/json

@@ -3,9 +3,7 @@ package com.yahir.marketdataaggregator.controller;
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
 import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.service.MarketDataService;
-import org.apache.coyote.Response;
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
+@RequestMapping("/api")
 @RestController
 public class MarketDataController {
-
-    private final PriceRepository priceRepository;
 
     public record ResponseDTO(String symbol, BigDecimal price, Instant timeStamp, String source){}
     public record ApiError(String message) {}
 
     private final MarketDataService marketDataService;
+    private final PriceRepository priceRepository;
 
-    @Autowired
     public MarketDataController(MarketDataService service, PriceRepository priceRepository) {
         this.marketDataService = service;
         this.priceRepository = priceRepository;

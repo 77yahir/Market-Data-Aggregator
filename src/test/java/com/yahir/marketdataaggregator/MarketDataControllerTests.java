@@ -49,7 +49,7 @@ public class MarketDataControllerTests {
         AggregatedPrice testBTC = new AggregatedPrice("BTCUSD", 35000, fixedClock.instant(), "TestSource");
         when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.of(testBTC));
 
-        mockMvc.perform(get("/prices/BTCUSD"))
+        mockMvc.perform(get("/api/prices/BTCUSD"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol").value("BTCUSD"))
@@ -62,7 +62,7 @@ public class MarketDataControllerTests {
     public void getBestPriceReturns404ErrorWhenBestDoesNotExist() throws Exception {
         when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/prices/BTCUSD"))
+        mockMvc.perform(get("/api/prices/BTCUSD"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Symbol not found with name: BTCUSD"));
     }
@@ -71,13 +71,13 @@ public class MarketDataControllerTests {
     public void getBestPriceOfReturns400ErrorWhenSymbolIsNullOrEmpty() throws Exception {
         when(marketDataService.getBest(null)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/prices/null"))
+        mockMvc.perform(get("/api/prices/null"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Symbol cannot be null or empty"));
 
         when(marketDataService.getBest("")).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/prices/ "))
+        mockMvc.perform(get("/api/prices/ "))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Symbol cannot be null or empty"));
     }
@@ -92,7 +92,7 @@ public class MarketDataControllerTests {
 
         when(marketDataService.getAllBest()).thenReturn(map);
 
-        mockMvc.perform(get("/prices"))
+        mockMvc.perform(get("/api/prices"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[*].symbol", hasItems("BTCUSD", "ETHUSD")))
@@ -109,7 +109,7 @@ public class MarketDataControllerTests {
         Map<String, AggregatedPrice> map = new HashMap<>();
         when(marketDataService.getAllBest()).thenReturn(map);
 
-        mockMvc.perform(get("/prices"))
+        mockMvc.perform(get("/api/prices"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty())
@@ -121,7 +121,7 @@ public class MarketDataControllerTests {
         AggregatedPrice testBTC = new AggregatedPrice("BTCUSD", 35000.656151, fixedClock.instant(), "TestSource");
         when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.of(testBTC));
 
-        mockMvc.perform(get("/prices/BTCUSD"))
+        mockMvc.perform(get("/api/prices/BTCUSD"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.price").value(35000.66));
     }
@@ -129,11 +129,11 @@ public class MarketDataControllerTests {
     @Test
     public void pollOnceReturns400ErrorWhenSymbolIsNullOrEmpty() throws Exception {
 
-        mockMvc.perform(post("/poll/ "))
+        mockMvc.perform(post("/api/poll/ "))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Symbol cannot be null or empty"));
 
-        mockMvc.perform(post("/poll/null"))
+        mockMvc.perform(post("/api/poll/null"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Symbol cannot be null or empty"));
 
@@ -145,7 +145,7 @@ public class MarketDataControllerTests {
     public void pollOnceReturns404ErrorWhenSymbolIsNotFound() throws Exception {
         when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/poll/BTCUSD"))
+        mockMvc.perform(post("/api/poll/BTCUSD"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Symbol not found with name: BTCUSD"));
 
@@ -158,7 +158,7 @@ public class MarketDataControllerTests {
         AggregatedPrice testBTC = new AggregatedPrice("BTCUSD", 35000, fixedClock.instant(), "TestSource");
         when(marketDataService.getBest("BTCUSD")).thenReturn(Optional.of(testBTC));
 
-        mockMvc.perform(post("/poll/BTCUSD"))
+        mockMvc.perform(post("/api/poll/BTCUSD"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.symbol").value("BTCUSD"))
                 .andExpect(jsonPath("$.price").value(35000.0))
