@@ -1,10 +1,11 @@
 package com.yahir.marketdataaggregator.controller;
 
 import com.yahir.marketdataaggregator.domain.AggregatedPrice;
+import com.yahir.marketdataaggregator.exception.InvalidSymbolException;
+import com.yahir.marketdataaggregator.exception.SymbolNotFoundException;
 import com.yahir.marketdataaggregator.repository.PriceRepository;
 import com.yahir.marketdataaggregator.service.MarketDataService;
 import org.jspecify.annotations.NonNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,6 @@ import java.util.Optional;
 public class MarketDataController {
 
     public record ResponseDTO(String symbol, BigDecimal price, Instant timeStamp, String source){}
-    public record ApiError(String message) {}
 
     private final MarketDataService marketDataService;
     private final PriceRepository priceRepository;
@@ -35,9 +35,7 @@ public class MarketDataController {
     public ResponseEntity<?> getBestPriceOf(@PathVariable String symbol) {
 
         if (isEmptyOrNull(symbol)) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiError("Symbol cannot be null or empty"));
+            throw new InvalidSymbolException("Symbol cannot be null or empty");
         }
         return getResponseEntity(symbol);
     }
@@ -62,9 +60,7 @@ public class MarketDataController {
     public ResponseEntity<?> pollOnce(@PathVariable String symbol) {
 
         if (isEmptyOrNull(symbol)) {
-            return ResponseEntity.
-                    status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiError("Symbol cannot be null or empty"));
+            throw new InvalidSymbolException("Symbol cannot be null or empty");
         }
 
         marketDataService.pollOnce(symbol);
@@ -120,9 +116,7 @@ public class MarketDataController {
         Optional<AggregatedPrice> best = marketDataService.getBest(symbol);
 
         if (best.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(new ApiError("Symbol not found with name: " + symbol));
+            throw new SymbolNotFoundException("Symbol not found with name: " + symbol);
         }
         ResponseDTO dto = toDTO(best.get());
         return ResponseEntity.ok(dto);
